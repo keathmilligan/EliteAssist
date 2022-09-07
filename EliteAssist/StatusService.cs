@@ -86,14 +86,13 @@ namespace EliteAssist
         public bool BreathableAtmosphere { get; set; }
     }
 
-    internal class StatusService : Service<StatusService>
+    internal class StatusService : Service
     {
         public EliteStatus StatusData = new EliteStatus();
-        public static StatusWatcher StatusWatcher;
+        private StatusWatcher StatusWatcher;
 
-        protected override void _Initialize(WebSocketServer webSocketServer)
+        public StatusService(WebSocketServer webSocketServer) : base(webSocketServer)
         {
-            base._Initialize(webSocketServer);
             StatusWatcher = new StatusWatcher(GameInfo.StandardDirectory.FullName);
             StatusWatcher.StatusUpdated += HandleStatusEvents;
             StatusWatcher.StartWatching();
@@ -101,7 +100,7 @@ namespace EliteAssist
 
         public override string Resource { get => "/status"; }
 
-        protected override void _HandleClientRequest(ClientRequest request)
+        protected override void HandleClientRequest(ClientRequest request)
         {
             switch(request.Method)
             {
@@ -184,14 +183,9 @@ namespace EliteAssist
             }
         }
 
-        private void _Refresh()
+        public void Refresh()
         {
             SendClientMessage(StatusData);
-        }
-
-        public static void Refresh(List<string> qargs)
-        {
-            GetInstance()._Refresh();
         }
     }
 }

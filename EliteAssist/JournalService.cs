@@ -5,13 +5,12 @@ using WebSocketSharp.Server;
 
 namespace EliteAssist
 {
-    internal class JournalService : Service<JournalService>
+    internal class JournalService : Service
     {
-        public static JournalWatcher JournalWatcher;
+        private JournalWatcher JournalWatcher;
 
-        protected override void _Initialize(WebSocketServer webSocketServer)
+        public JournalService(WebSocketServer webSocketServer) : base(webSocketServer)
         {
-            base._Initialize(webSocketServer);
             JournalWatcher = new JournalWatcher(GameInfo.StandardDirectory.FullName);
             JournalWatcher.AllEventHandler += HandleJournalEvents;
             JournalWatcher.StartWatching().Wait();
@@ -19,7 +18,7 @@ namespace EliteAssist
 
         public override string Resource { get => "/journal"; }
 
-        protected override void _HandleClientRequest(ClientRequest request)
+        protected override void HandleClientRequest(ClientRequest request)
         {
         }
 
@@ -34,7 +33,7 @@ namespace EliteAssist
             }
         }
 
-        public static void Replay(List<string> qargs)
+        public void Replay()
         {
             JournalWatcher.ProcessPreviousJournals();
         }

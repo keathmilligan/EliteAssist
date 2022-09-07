@@ -1,24 +1,21 @@
 ﻿using NLog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
 namespace EliteAssist
 {
-    internal abstract class Service<T>
-        where T : Service<T>, new()
+    internal abstract class Service
     {
-        private class WebSocketService : WebSocketBehavior
+        protected class WebSocketService : WebSocketBehavior
         {
+            public Service Service { get; set; }
+
             protected override void OnMessage(MessageEventArgs e)
             {
                 if (e != null && e.Data != null)
                 {
-                    HandleClientRequest(Utils.DeserializeJSON<ClientRequest>(e.Data));
+                    Service.HandleClientRequest(Utils.DeserializeJSON<ClientRequest>(e.Data));
                 }
             }
             public void SendMessage(string message)
@@ -28,16 +25,16 @@ namespace EliteAssist
         }
         
         protected static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
-        private static T instance = null;
-        private WebSocketService _WebSocketService = null;
+        protected WebSocketService _WebSocketService = null;
 
-        protected static T GetInstance()
+        public Service(WebSocketServer webSocketServer)
         {
-            if (instance == null)
+            Logger.Info($"Initializing {this.GetType().Name}");
+            webSocketServer.AddWebSocketService<WebSocketService>(Resource, s =>
             {
-                instance = new T();
-            }
-            return instance;
+                _WebSocketService = s;
+                s.Service = this;
+            });
         }
 
         protected void SendClientMessage(object message)
@@ -51,54 +48,11 @@ namespace EliteAssist
             }
         }
 
-        protected virtual void _Initialize(WebSocketServer webSocketServer)
+        protected virtual void HandleClientRequest(ClientRequest request)
         {
-            webSocketServer.AddWebSocketService<WebSocketService>(Resource, s =>
-            {
-                _WebSocketService = s;
-            });
-        }
-
-        protected abstract void _HandleClientRequest(ClientRequest request);
-
-        protected static void HandleClientRequest(ClientRequest request)
-        {
-            Logger.Info($"journal client request: {request}");
-            GetInstance()._HandleClientRequest(request);
+            Logger.Info($"{GetType().Name} client request: {request}");
         }
 
         public abstract string Resource { get; }
-
-        public static void Initialize(WebSocketServer webSocketServer)
-        {
-            GetInstance()._Initialize(webSocketServer);
-        }
     }
 }
-
-
-// Service Template
-//using System.Collections.Generic;
-//using WebSocketSharp;
-//using WebSocketSharp.Server;
-
-//namespace EliteAssist
-//{
-//    internal class MyService : Service<MyService>
-//    {
-//        protected override void _Initialize(WebSocketServer webSocketServer)
-//        {
-//            base._Initialize(webSocketServer);
-//        }
-
-//        public override string Resource { get => "/someresource"; }
-
-//        protected override void _HandleClientRequest(ClientRequest request)
-//        {
-//        }
-
-//        public static void SomeCommand(List<string> qargs)
-//        {
-//        }
-//    }
-//}

@@ -1,23 +1,43 @@
-﻿using System.Collections.Generic;
+﻿using EliteJournalReader;
+using EliteJournalReader.Events;
+using System.Collections.Generic;
 using WebSocketSharp.Server;
 
 namespace EliteAssist
 {
-    internal class NavigationService : Service<NavigationService>
+    internal class NavigationService : Service
     {
-        protected override void _Initialize(WebSocketServer webSocketServer)
+        private NavRouteWatcher NavRouteWatcher;
+        public NavRouteEvent.NavRouteEventArgs NavRoute;
+
+        public NavigationService(WebSocketServer webSocketServer) : base(webSocketServer)
         {
-            base._Initialize(webSocketServer);
+            NavRouteWatcher = new NavRouteWatcher(GameInfo.StandardDirectory.FullName);
+            NavRouteWatcher.NavRouteUpdated += HandleNavRouteEvents;
+            NavRouteWatcher.StartWatching();
         }
 
-        public override string Resource { get => "/someresource"; }
+        public override string Resource { get => "/navigation"; }
 
-        protected override void _HandleClientRequest(ClientRequest request)
+        protected override void HandleClientRequest(ClientRequest request)
         {
+            switch (request.Method)
+            {
+                case "GET":
+                    SendClientMessage(NavRoute);
+                    break;
+            }
         }
 
-        public static void SomeCommand(List<string> qargs)
+        public void HandleNavRouteEvents(object sender, NavRouteEvent.NavRouteEventArgs eventArgs)
         {
+            Logger.Debug($"NavRoute event received: {eventArgs}");
+            NavRoute = eventArgs;
+        }
+
+        public void Refresh()
+        {
+            SendClientMessage(NavRoute);
         }
     }
 }

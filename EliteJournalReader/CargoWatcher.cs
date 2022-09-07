@@ -16,8 +16,8 @@ using Newtonsoft.Json;
 
 namespace EliteJournalReader
 {
-
     // copied from https://github.com/MagicMau/EliteJournalReader
+    [System.ComponentModel.DesignerCategory("Code")]
 
     public class CargoWatcher : FileSystemWatcher
     {

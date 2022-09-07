@@ -1,23 +1,42 @@
-﻿using System.Collections.Generic;
+﻿using EliteJournalReader;
+using EliteJournalReader.Events;
 using WebSocketSharp.Server;
 
 namespace EliteAssist
 {
-    internal class BackpackService : Service<BackpackService>
+    internal class BackPackService : Service
     {
-        protected override void _Initialize(WebSocketServer webSocketServer)
+        public static BackPackWatcher BackPackWatcher;
+        public static BackPackEvent.BackPackEventArgs BackPack;
+
+        public BackPackService(WebSocketServer webSocketServer) : base(webSocketServer)
         {
-            base._Initialize(webSocketServer);
+            BackPackWatcher = new BackPackWatcher(GameInfo.StandardDirectory.FullName);
+            BackPackWatcher.BackPackUpdated += HandleBackPackEvents;
+            BackPackWatcher.StartWatching();
         }
 
-        public override string Resource { get => "/someresource"; }
+        public override string Resource { get => "/backpack"; }
 
-        protected override void _HandleClientRequest(ClientRequest request)
+        protected override void HandleClientRequest(ClientRequest request)
         {
+            switch (request.Method)
+            {
+                case "GET":
+                    SendClientMessage(BackPack);
+                    break;
+            }
         }
 
-        public static void SomeCommand(List<string> qargs)
+        public void HandleBackPackEvents(object sender, BackPackEvent.BackPackEventArgs eventArgs)
         {
+            Logger.Debug($"backpack event received: {eventArgs}");
+            BackPack = eventArgs;
+        }
+
+        public void Refresh()
+        {
+            SendClientMessage(BackPack);
         }
     }
 }

@@ -10,7 +10,7 @@ type EliteStatusEventHandler = (event: EliteStatusEvent) => void;
 
 
 @singleton()
-export class EliteStatusService {
+export class StatusService {
   private handlers: Array<EliteStatusEventHandler>;
   private wsStatus: WebSocket;
   private statusJSON: string;

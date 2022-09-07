@@ -1,23 +1,43 @@
-﻿using System.Collections.Generic;
+﻿using EliteJournalReader;
+using EliteJournalReader.Events;
+using System.Collections.Generic;
 using WebSocketSharp.Server;
 
 namespace EliteAssist
 {
-    internal class ShipLockerService : Service<ShipLockerService>
+    internal class ShipLockerService : Service
     {
-        protected override void _Initialize(WebSocketServer webSocketServer)
+        private ShipLockerWatcher ShipLockerWatcher;
+        public ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs ShipLocker;
+
+        public ShipLockerService(WebSocketServer webSocketServer) : base(webSocketServer)
         {
-            base._Initialize(webSocketServer);
+            ShipLockerWatcher = new ShipLockerWatcher(GameInfo.StandardDirectory.FullName);
+            ShipLockerWatcher.ShipLockerUpdated += HandleShipLockerMaterialsEvents;
+            ShipLockerWatcher.StartWatching();
         }
 
-        public override string Resource { get => "/someresource"; }
+        public override string Resource { get => "/shiplocker"; }
 
-        protected override void _HandleClientRequest(ClientRequest request)
+        protected override void HandleClientRequest(ClientRequest request)
         {
+            switch (request.Method)
+            {
+                case "GET":
+                    SendClientMessage(ShipLocker);
+                    break;
+            }
         }
 
-        public static void SomeCommand(List<string> qargs)
+        public void HandleShipLockerMaterialsEvents(object sender, ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs eventArgs)
         {
+            Logger.Debug($"ShipLocker event received: {eventArgs}");
+            ShipLocker = eventArgs;
+        }
+
+        public void Refresh()
+        {
+            SendClientMessage(ShipLocker);
         }
     }
 }

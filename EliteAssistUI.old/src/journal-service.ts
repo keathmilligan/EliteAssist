@@ -1,16 +1,16 @@
 import { singleton } from 'tsyringe';
 
-export class EliteJournalEvent {
+export class JournalEvent {
   constructor(public name: string,
               public eventJSON: string) {}
 }
 
-type EliteJournalEventHandler = (event: EliteJournalEvent) => void;
+type JournalEventHandler = (event: JournalEvent) => void;
 
 
 @singleton()
-export class EliteJournalService {
-  private handlers: Array<EliteJournalEventHandler>;
+export class JournalService {
+  private handlers: Array<JournalEventHandler>;
   private wsStatus: WebSocket;
   private retrying = false;
 
@@ -55,15 +55,15 @@ export class EliteJournalService {
   }
 
   private handleJournalEvent(event: MessageEvent): void {
-    const statusEvent = new EliteJournalEvent('update', event.data);
+    const statusEvent = new JournalEvent('update', event.data);
     this.handlers.forEach((handler) => handler(statusEvent));
   }
 
-  subscribe(handler: EliteJournalEventHandler): void {
+  subscribe(handler: JournalEventHandler): void {
     this.handlers.push(handler);
   }
 
-  unsubscribe(handler: EliteJournalEventHandler): void {
+  unsubscribe(handler: JournalEventHandler): void {
     const index = this.handlers.indexOf(handler);
     if (index >= 0) {
       this.handlers.splice(index, 1);

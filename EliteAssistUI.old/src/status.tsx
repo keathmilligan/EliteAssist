@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {container} from 'tsyringe';
-import {EliteStatusService, EliteStatusEvent} from './elite-status-service';
+import {StatusService, EliteStatusEvent} from './status-service';
 
 type EliteState = {
   json: string;
@@ -9,11 +9,11 @@ type EliteState = {
 // eslint-disable-next-line @typescript-eslint/ban-types
 export class EliteStatus extends Component<{}, EliteState> {
   wsStatus: WebSocket;
-  statusService: EliteStatusService;
+  statusService: StatusService;
 
   constructor(props: never) {
     super(props);
-    this.statusService = container.resolve(EliteStatusService);
+    this.statusService = container.resolve(StatusService);
 
     this.handleUpdate = this.handleUpdate.bind(this);
   }
