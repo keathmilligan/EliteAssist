@@ -1,0 +1,29 @@
+﻿PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+
+CREATE TABLE IF NOT EXISTS migrations (
+	id INTEGER PRIMARY KEY,
+	name TEXT,
+	timestamp TEXT
+);
+
+CREATE TABLE IF NOT EXISTS dashboards (
+	id INTEGER PRIMARY KEY,
+	name TEXT,
+	overlay INTEGER,
+	click_through INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS actions (
+	id INTEGER PRIMARY KEY,
+	name TEXT,
+	script TEXT
+);
+
+CREATE TABLE IF NOT EXISTS hotkeys (
+	id INTEGER PRIMARY KEY,
+	keys TEXT,
+	action INTEGER
+);
+
+COMMIT;

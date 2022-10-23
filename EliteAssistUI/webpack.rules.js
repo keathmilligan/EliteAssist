@@ -17,13 +17,13 @@ module.exports = [
     },
   },
   {
-    test: /\.jsx?$/,
+    test: /\.tsx?$/,
+    exclude: /(node_modules|\.webpack)/,
     use: {
-      loader: 'babel-loader',
+      loader: 'ts-loader',
       options: {
-        exclude: /node_modules/,
-        presets: ['@babel/preset-react']
-      }
-    }
+        transpileOnly: true,
+      },
+    },
   },
 ];

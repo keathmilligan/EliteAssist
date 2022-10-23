@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "EliteAssistUI",
+			"path": "EliteAssistUI"
+		},
+		{
+			"name": "EliteAssist",
+			"path": "."
+		}
+	],
+	"settings": {}
+}
