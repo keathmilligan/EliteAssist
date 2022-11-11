@@ -5,7 +5,12 @@ using WebSocketSharp.Server;
 
 namespace EliteAssist.Services
 {
-    internal class CargoService : WebSocketService
+    public interface ICargoService
+    {
+
+    }
+
+    internal class CargoService : WebSocketService, ICargoService
     {
         private CargoWatcher CargoWatcher;
         public CargoEvent.CargoEventArgs Cargo;

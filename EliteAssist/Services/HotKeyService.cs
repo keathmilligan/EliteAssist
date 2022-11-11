@@ -10,7 +10,12 @@ namespace EliteAssist.Services
         public string Name { get; set; }
     }
 
-    internal class HotKeyService : WebSocketService
+    public interface IHotKeyService
+    {
+
+    }
+
+    internal class HotKeyService : WebSocketService, IHotKeyService
     {
         public HotKeyService() : base()
         {

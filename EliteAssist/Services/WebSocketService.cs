@@ -1,12 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using NLog;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -49,6 +43,12 @@ namespace EliteAssist.Services
         public string Body { get; set; }
     }
 
+    internal class ClientRequestOut
+    {
+        public string Method { get; set; }
+        public string Body { get; set; }
+    }
+
     internal class StaticConfig
     {
         internal static WebSocketServer WebSocketServer = null;
@@ -73,7 +73,7 @@ namespace EliteAssist.Services
         }
     }
 
-    public abstract class WebSocketService : BackgroundService
+    public abstract class WebSocketService // : BackgroundService
     {
         protected static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
         public abstract string Resource { get; }
@@ -127,23 +127,28 @@ namespace EliteAssist.Services
             }
         }
 
-        protected void SendClientMessage(string method, object message)
+        protected void SendClientMessage(string method, object payload)
         {
             if (WebSocket != null)
             {
-                string json = Utils.SerializeJSON(message);
+                var request = new ClientRequestOut
+                {
+                    Method = method,
+                    Body = Utils.SerializeJSON(payload)
+                };
+                string json = Utils.SerializeJSON(request);
                 Logger.Info("sending event");
                 Logger.Debug(json);
                 WebSocket.SendMessage(json);
             }
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                await Task.Delay(1000, stoppingToken);
-            }
-        }
+        //protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        //{
+        //    while (!stoppingToken.IsCancellationRequested)
+        //    {
+        //        await Task.Delay(1000, stoppingToken);
+        //    }
+        //}
     }
 }

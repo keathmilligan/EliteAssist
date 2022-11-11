@@ -10,7 +10,12 @@ namespace EliteAssist.Services
         public string Name { get; set; }
     }
 
-    internal class MarketService : WebSocketService
+    public interface IMarketService
+    {
+
+    }
+
+    internal class MarketService : WebSocketService, IMarketService
     {
         public MarketService() : base()
         {

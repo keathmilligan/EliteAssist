@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS dashboards (
 	id INTEGER PRIMARY KEY,
 	name TEXT,
 	overlay INTEGER,
-	click_through INTEGER
+	click_through INTEGER,
+	titlebar INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS actions (

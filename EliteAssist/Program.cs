@@ -3,10 +3,8 @@ using NLog.Config;
 using NLog.Targets;
 using System;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using WebSocketSharp;
-using WebSocketSharp.Server;
 using EliteAssist.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,19 +48,21 @@ namespace EliteAssist
             builder.ConfigureServices(services =>
                 services.AddSingleton<IDatabase, DatabaseManager>()
                         .AddSingleton<IConfig, ConfigManager>()
-                        .AddHostedService<SystemService>()
-                        .AddHostedService<ActionService>()
-                        .AddHostedService<BackpackService>()
-                        .AddHostedService<CargoService>()
-                        .AddHostedService<DashboardService>()
-                        .AddHostedService<HotKeyService>()
-                        .AddHostedService<JournalService>()
-                        .AddHostedService<MarketService>()
-                        .AddHostedService<NavigationService>()
-                        .AddHostedService<ShipLockerService>()
-                        .AddHostedService<StatusService>());
+                        .AddSingleton<ISystemService, SystemService>()
+                        .AddSingleton<IActionService, ActionService>()
+                        .AddSingleton<IBackbackService, BackpackService>()
+                        .AddSingleton<ICargoService, CargoService>()
+                        .AddSingleton<IDashboardService, DashboardService>()
+                        .AddSingleton<IHotKeyService, HotKeyService>()
+                        .AddSingleton<IJournalService, JournalService>()
+                        .AddSingleton<IMarketService, MarketService>()
+                        .AddSingleton<INavigationService, NavigationService>()
+                        .AddSingleton<IShipLockerService, ShipLockerService>()
+                        .AddSingleton<IStatusService, StatusService>()
+                        .AddHostedService<BootstrapService>());
             var host = builder.Build();
             await host.RunAsync();
+            //await Task.Delay(-1);
         }
     }
 }

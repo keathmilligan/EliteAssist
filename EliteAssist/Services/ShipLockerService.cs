@@ -6,7 +6,12 @@ using WebSocketSharp.Server;
 
 namespace EliteAssist.Services
 {
-    internal class ShipLockerService : WebSocketService
+    public interface IShipLockerService
+    {
+
+    }
+
+    internal class ShipLockerService : WebSocketService, IShipLockerService
     {
         private ShipLockerWatcher ShipLockerWatcher;
         public ShipLockerMaterialsEvent.ShipLockerMaterialsEventArgs ShipLocker;

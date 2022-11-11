@@ -6,7 +6,12 @@ using WebSocketSharp.Server;
 
 namespace EliteAssist.Services
 {
-    internal class NavigationService : WebSocketService
+    public interface INavigationService
+    {
+
+    }
+
+    internal class NavigationService : WebSocketService, INavigationService
     {
         private NavRouteWatcher NavRouteWatcher;
         public NavRouteEvent.NavRouteEventArgs NavRoute;

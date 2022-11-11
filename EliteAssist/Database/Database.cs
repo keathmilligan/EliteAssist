@@ -4,19 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EliteAssist.Database
 {
     public interface IDatabase
     {
-
+        DatabaseConnection GetConnection();
+        int ExecuteSqlFile(string script, DatabaseConnection db);
+        int ExecuteSqlFile(string script);
     }
 
     [System.ComponentModel.DesignerCategory("Code")]
-    internal class DatabaseConnection : SqliteConnection
+    public class DatabaseConnection : SqliteConnection
     {
         public DatabaseConnection(string databasePath) : base($"Data Source={databasePath}") { }
 
@@ -26,6 +25,15 @@ namespace EliteAssist.Database
             {
                 command.CommandText = sql;
                 return command.ExecuteNonQuery();
+            }
+        }
+
+        public object ExecuteScalar(string sql)
+        {
+            using (var command = CreateCommand())
+            {
+                command.CommandText = sql;
+                return command.ExecuteScalar();
             }
         }
 
@@ -41,19 +49,21 @@ namespace EliteAssist.Database
     internal class DatabaseManager : IDatabase
     {
         private static readonly NLog.Logger Logger = LogManager.GetCurrentClassLogger();
-        private static string DATABASE_PATH
-        {
-            get => Path.Combine(Program.APPLICATION_DATA, "elite-assist.db");
-        }
+        private static string DATABASE_FILENAME = "elite-assist.db";
+        private string DataDir;
+        private string DatabasePath;
 
         public DatabaseManager()
         {
-            Logger.Info("starting database manager service");
-            if (!File.Exists(DATABASE_PATH))
+            var localDB = Path.Combine(Directory.GetCurrentDirectory(), "Database");
+            DataDir = Directory.Exists(localDB) ? localDB : Program.APPLICATION_DATA;
+            DatabasePath = Path.Combine(DataDir, DATABASE_FILENAME);
+            Logger.Info($"starting database manager service - {DatabasePath}");
+            if (!File.Exists(DatabasePath))
             {
                 // Create blank database
-                Logger.Info($"creating {DATABASE_PATH}");
-                File.Create(DATABASE_PATH).Dispose();
+                Logger.Info($"creating {DatabasePath}");
+                File.Create(DatabasePath).Dispose();
                 ExecuteSqlFile("schema.sql3");
             }
 
@@ -63,18 +73,14 @@ namespace EliteAssist.Database
 
         public DatabaseConnection GetConnection()
         {
-            var connection = new DatabaseConnection(DATABASE_PATH);
+            var connection = new DatabaseConnection(DatabasePath);
             connection.Open();
             return connection;
         }
 
         public int ExecuteSqlFile(string script, DatabaseConnection db)
         {
-            var sqlPath = Path.Combine(Assembly.GetExecutingAssembly().Location, script);
-            if (!File.Exists(sqlPath))
-            {
-                sqlPath = Path.Combine(".", "Database", script);
-            }
+            var sqlPath = Path.Combine(DataDir, script);
             Logger.Debug($"cwd = {Directory.GetCurrentDirectory()}");
             Logger.Debug($"executing: {sqlPath}");
             var sql = File.ReadAllText(sqlPath);
@@ -104,11 +110,7 @@ namespace EliteAssist.Database
                     }
                 }
 
-                var migrationsPath = Path.Combine(Assembly.GetExecutingAssembly().Location, "Migrations");
-                if (!Directory.Exists(migrationsPath))
-                {
-                    migrationsPath = Path.Combine(".", "Database", "Migrations");
-                }
+                var migrationsPath = Path.Combine(DataDir, "Migrations");
                 Logger.Info($"applying database migrations - path: {migrationsPath}");
                 foreach (string migration in Directory.EnumerateFiles(migrationsPath)
                             .Select(m => Path.GetFileName(m))

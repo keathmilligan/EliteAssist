@@ -10,7 +10,12 @@ namespace EliteAssist.Services
         public string Name { get; set; }
     }
 
-    public class ActionService : WebSocketService
+    public interface IActionService
+    {
+
+    }
+
+    public class ActionService : WebSocketService, IActionService
     {
         public override string Resource { get => "/action"; }
 

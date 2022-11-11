@@ -1,16 +1,10 @@
 ﻿using EliteAssist.Database;
 using NLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EliteAssist.Config
 {
     public interface IConfig
     {
-
     }
 
     internal class ConfigManager : IConfig
@@ -24,7 +18,5 @@ namespace EliteAssist.Config
             Database = database;
             KeyBindings.GetKeyBindings();
         }
-
-
     }
 }

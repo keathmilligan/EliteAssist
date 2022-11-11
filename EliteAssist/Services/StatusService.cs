@@ -82,7 +82,12 @@ namespace EliteAssist.Services
         public bool BreathableAtmosphere { get; set; }
     }
 
-    internal class StatusService : WebSocketService
+    public interface IStatusService
+    {
+
+    }
+
+    internal class StatusService : WebSocketService, IStatusService
     {
         public EliteStatus StatusData = new EliteStatus();
         private StatusWatcher StatusWatcher;

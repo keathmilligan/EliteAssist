@@ -18,7 +18,7 @@ namespace EliteAssist
         private static JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
         {
             ContractResolver = CamelCaseResolver,
-            Formatting = Formatting.Indented,
+            //Formatting = Formatting.Indented,
         };
         public static string SerializeJSON(object value)
         {

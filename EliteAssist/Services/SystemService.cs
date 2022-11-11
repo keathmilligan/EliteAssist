@@ -10,7 +10,12 @@ namespace EliteAssist.Services
         public string Name { get; set; }
     }
 
-    internal class SystemService : WebSocketService
+    public interface ISystemService
+    {
+
+    }
+
+    internal class SystemService : WebSocketService, ISystemService
     {
         public SystemService() : base()
         {

@@ -6,7 +6,12 @@ using WebSocketSharp.Server;
 
 namespace EliteAssist.Services
 {
-    internal class JournalService : WebSocketService
+    public interface IJournalService
+    {
+
+    }
+
+    internal class JournalService : WebSocketService, IJournalService
     {
         private JournalWatcher JournalWatcher;
 

@@ -5,7 +5,12 @@ using WebSocketSharp.Server;
 
 namespace EliteAssist.Services
 {
-    public class BackpackService : WebSocketService
+    public interface IBackbackService
+    {
+
+    }
+
+    internal class BackpackService : WebSocketService, IBackbackService
     {
         public static BackPackWatcher BackPackWatcher;
         public static BackPackEvent.BackPackEventArgs BackPack;
