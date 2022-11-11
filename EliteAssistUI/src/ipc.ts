@@ -13,6 +13,7 @@ import { IpcRendererEvent } from "electron";
 // }
 
 export class IPCAPI {
-  send: (channel: string, message: string) => void;
+  send: (channel: string, args: unknown[]) => void;
+  sendSync: (channel: string, args: unknown[]) => unknown;
   onReceive: (channel: string, callback: (event: IpcRendererEvent, ...args: never[]) => void) => void;
 }

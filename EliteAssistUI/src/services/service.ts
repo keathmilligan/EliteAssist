@@ -21,7 +21,7 @@ export abstract class Service {
     const url = `ws://localhost:5556/${this.resource}`;
     console.log(`connecting to ${url}`)
     this.ws = new WebSocket(url);
-    this.ws.onmessage = (event: MessageEvent) => this.handleMessage(JSON.parse(event.data));
+    this.ws.onmessage = (event: MessageEvent) => this.handleMessage(event.data);
     this.ws.onopen = () => this.connectionOpened();
     this.ws.onclose = () => this.connectionClosed();
     this.ws.onerror = (event: Event) => this.connectionError(event);
@@ -31,7 +31,7 @@ export abstract class Service {
     if (!this.retrying) {
       this.retrying = true;
       setTimeout(() => {
-        console.log('retrying connection');
+        console.log(`${this.resource}: retrying connection`);
         this.retrying = false;
         this.connect();
       }, 15000);
@@ -39,25 +39,28 @@ export abstract class Service {
   }
 
   protected connectionOpened(): void {
-    console.log('connection opened');
+    console.log(`${this.resource}: connection opened`);
   }
 
   protected connectionClosed(): void {
-    console.log('connection closed');
+    console.log(`${this.resource}: connection closed`);
     this.retryConnection();
   }
 
   protected connectionError(event: Event): void {
-    console.log('connection error: ', event)
+    console.log(`${this.resource}: connection error`, event);
     this.retryConnection();
   }
 
   protected send(method: string, body: unknown=null): void {
-    this.ws.send(JSON.stringify({method: method, body: body}));
+    const msg = JSON.stringify({method: method, body: body})
+    console.log(`${this.resource}: send:    ${msg}`)
+    this.ws.send(msg);
   }
   
-  public handleMessage(request: ClientRequest): void {
-    console.log(`received: ${request.method}: ${request.body}`)
+  public handleMessage(msg: string): void {
+    console.log(`${this.resource}: receive: ${msg}`);
+    const request: ClientRequest = JSON.parse(msg)
     const routes: Map<string, (service:Service, body:unknown) => void> = Reflect.getMetadata("routes", this);
     if (routes.has(request.method)) {
       const func: (service:Service, body:unknown) => void =  routes.get(request.method);

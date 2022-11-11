@@ -1,0 +1,68 @@
+.settings-window {
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+
+.settings-frame {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  margin: 0;
+  padding: 0;
+  background-color: #1d1d1d;
+  color: rgb(207, 207, 207);
+  border: 2px solid #282828;
+  border-radius: 10px;
+}
+
+.background {
+  position: absolute;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  background: url("../images/elite-assist.svg") no-repeat;
+  background-position: bottom -200px right -400px;
+  background-size: auto 170%;
+  opacity: 0.08;
+  user-select: none;
+  pointer-events: none;
+}
+
+.settings-content {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  height: 100%;
+  z-index: 1;
+}
+
+.sidebar {
+  display: block;
+  background-color: #141414;
+  width: 380px;
+  height: 400px;
+  margin: 15px;
+}
+
+.config-panel {
+  flex-grow: 1;
+  width: 100%;
+  height: 400px;
+  margin: 15px 30px 15px 15px;
+}
+
+.menu {
+  border-top: 1px solid #192834;
+}
+
+.menu-item {
+  font-size: 18px;
+  color: #4b8ec5;
+  cursor: pointer;
+}
+.menu-item:hover {
+  color: #62b1f1;
+}

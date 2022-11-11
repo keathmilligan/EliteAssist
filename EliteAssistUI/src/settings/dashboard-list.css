@@ -1,0 +1,20 @@
+.dashboard-list {
+  display: block;
+  height: 264px;
+}
+
+.dashboard-item {
+  font-size: 26px;
+  font-weight: 400;
+  color: #54acf4;
+  cursor:default;
+}
+
+.dashboard-item:hover {
+  background-color: #3a6486;
+}
+.selected {
+  color: rgb(25, 28, 31);
+  background-color: #4c97d4;
+}
+

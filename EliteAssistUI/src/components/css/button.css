@@ -1,0 +1,27 @@
+.button {
+  display: inline-block;
+  min-width: 20px;
+  min-height: 20px;
+}
+.button.hover {
+  cursor: pointer;
+}
+
+.button-content {
+  margin: auto;
+  display: flex;
+  align-items: center;
+}
+
+.button-icon {
+  color: rgb(148, 148, 148);
+  height: 16px;
+}
+.button-icon.hover {
+  color: white;
+}
+
+.button-title {
+  display: inline-block;
+  margin: 0 4px 0 4px;
+}

@@ -1,9 +1,28 @@
 import React, { Component } from 'react';
 import * as ReactDOM from 'react-dom';
 import 'reflect-metadata';
+import { createTheme, ThemeProvider, CssBaseline } from '@mui/material'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
 import { About } from './about';
-import { Dashboard } from './dashboard/dashboard';
+import { DashboardWindow } from './dashboard/dashboard-window';
 import { Settings } from './settings/settings';
+
+library.add(fas);
+library.add(far);
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+  typography: {
+    fontFamily: [
+      '"Segoe UI"',
+      'sans-serif',
+    ].join(','),
+  },
+});
 
 type AppWindowState = {
   showAbout: boolean;
@@ -31,11 +50,18 @@ class AppWindows extends Component<unknown, AppWindowState> {
 
 function render() {
   const params = new URLSearchParams(global.location.search);
+  let content: JSX.Element;
   if (params.get('window') == 'main') {
-    ReactDOM.render(<AppWindows/>, document.body);
+    content = <AppWindows/>;
   } else {
-    ReactDOM.render(<Dashboard name={ params.get('dashboard') }/>, document.body);
+    content = <DashboardWindow name={ params.get('dashboard') }/>;
   }
+  return ReactDOM.render((
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline/>
+      { content }
+    </ThemeProvider>
+  ), document.body);
 }
 
 render();

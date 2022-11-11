@@ -26,4 +26,8 @@ module.exports = [
       },
     },
   },
+  {
+    test: /\.(gif|icns|ico|jpg|png|svg|webp|otf|eot|woff|woff2|ttf)$/,    
+    type: 'asset/resource',
+  },
 ];

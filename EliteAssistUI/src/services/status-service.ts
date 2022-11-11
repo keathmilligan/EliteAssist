@@ -1,5 +1,5 @@
 import { singleton } from "tsyringe";
-import { EliteStatus } from "../models/elite-status";
+import { EliteStatus } from "../models/generated/elite-status";
 import { method, Service } from "./service";
 
 @singleton()

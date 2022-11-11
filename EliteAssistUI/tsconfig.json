@@ -19,6 +19,7 @@
   },
   "include": ["src/**/*"],
   "files": [
-    "src/window.d.ts"
+    "src/window.d.ts",
+    "src/index.d.ts"
   ]
 }
